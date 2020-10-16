@@ -6,9 +6,10 @@ the `FastInput` struct which contains methods for reading and parsing
 line-based input. `FastInput` does no validation of the input and
 uses unsafe operations and buffering to achieve great performance.
 
+
 ## Example
 
-The following example creates a new `FastInput` and reads two lines:
+The following example creates a new `FastInput` and reads some input:
 
 ```rust
 // Input:
@@ -33,4 +34,10 @@ let numbers: Vec<u32> = input.next_as_iter().collect();
 // `FastInput` contains methods to read up to quintuples
 let (a, b, c, d, e) = input.next_quintuple();
 let sum: 0i32 + a + b + c + d + e;
+
+
+// Read all remaining lines and print them
+while input.has_next_line() {
+    println!("{}", input.next_line());
+}
 ```
