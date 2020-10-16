@@ -1,0 +1,15 @@
+[package]
+name = "fast_input"
+version = "0.1.0"
+authors = ["Klas af Geijerstam <klasafgeijerstam@gmail.com>"]
+edition = "2018"
+license = "MIT"
+description = "Fast and easy input from standard in, made for competetive programming"
+repository = "https://github.com/KlasafGeijerstam/fast_input"
+keywords = ["input", "competetive", "stdin", "kattis", "fast_input"]
+categories = ["parsing"]
+
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
