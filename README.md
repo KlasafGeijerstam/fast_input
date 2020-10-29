@@ -15,15 +15,13 @@ The following example creates a new `FastInput` and reads some input:
 // Input:
 // Hello!
 // 12 2000
-use fast_input::FastInput;
+use fast_input::{FastInput, Str};
 
-let mut input = FastInput::new();
-// Must make into String as next_line returns a slice to the internal buffer
-// and the second input line advances the internal buffer.
-let first_line = input.next_line().to_owned();
+let input = FastInput::new();
+let first_line = input.next_line();
 
-// Type arguments can often be omitted as rust is awesome, specified here
-// for clarity.
+// Type arguments can often be omitted as rust is awesome,
+// specified here for clarity.
 let (a, b): (u32, u32) = input.next_tuple();
 
 println!("First line was: {}, a + b = {}", first_line, a + b);
@@ -35,6 +33,11 @@ let numbers: Vec<u32> = input.next_as_iter().collect();
 let (a, b, c, d, e) = input.next_quintuple();
 let sum: 0i32 + a + b + c + d + e;
 
+
+// The `Str` type can be used to mix string slices with parsed data
+let (name, age) = input.next_tuple::<Str, u8>();
+// `Str` can be dereferenced into its contained string slice
+let name: &str = *name;
 
 // Read all remaining lines and print them
 while input.has_next_line() {
