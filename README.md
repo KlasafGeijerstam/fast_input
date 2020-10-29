@@ -12,9 +12,6 @@ uses unsafe operations and buffering to achieve great performance.
 The following example creates a new `FastInput` and reads some input:
 
 ```rust
-// Input:
-// Hello!
-// 12 2000
 use fast_input::{FastInput, Str};
 
 let input = FastInput::new();
