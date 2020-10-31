@@ -5,7 +5,6 @@ use std::str::{from_utf8_unchecked, FromStr};
 use std::ops::Deref;
 use std::fmt::Display;
 use std::io::stdin;
-use std::fs::File;
 
 
 /// Simplifies reading and parsing of known input in a speedy fashion.
@@ -322,10 +321,10 @@ impl FastInput {
 
     fn next_newline(&self) -> Option<usize> {
         let mut i = self.pos.get();
-        while i < self.data.len() && self.data[i] != '\n' as u8 {
+        while i < self.data.len() && self.data[i] != b'\n' {
             i += 1;
         }
-        if i < self.data.len() && self.data[i] == '\n' as u8 {
+        if i < self.data.len() && self.data[i] == b'\n' {
             Some(i)
         } else {
             None
