@@ -1,6 +1,5 @@
 use fast_input::{FastInput, Str};
 use std::collections::HashMap;
-use std::io::Write;
 
 fn main() {
     println!("Enter String number tuples (hello 2)");
