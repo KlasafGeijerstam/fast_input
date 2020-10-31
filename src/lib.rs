@@ -57,7 +57,7 @@ use std::io::stdin;
 /// // Deref the Str to a &str
 /// map.insert(*sven, sven_age);
 /// map.insert(*lorna, lorna_age);
-/// assert_eq(map["Sven"], 12);
+/// assert_eq!(map["Sven"], 12);
 /// ```
 pub struct FastInput {
     data: Vec<u8>,
@@ -359,17 +359,15 @@ where
 /// Reading (name, age, city) triples using `Str` and `FastInput`:
 /// ```no_run
 /// use fast_input::{FastInput, Str};
-/// use std::collections::HashMap;
 /// // Input:
 /// // Jakub 26 Mora
 /// let input = FastInput::new();
-/// let map = HashMap::new();
-/// let (name, age, city) = input.next_tripl::<Str, u8, Str>();
+/// let (name, age, city) = input.next_triple::<Str, u8, Str>();
 /// // Str implements Display
 /// println!("The person is called {}, is {} years old and lives in {}", name, age, city);
 /// 
 /// //To use any functions related to `&str`, dereference the `Str` into a `&str`
-/// assert_eq!(name.chars().len(), 5);
+/// let name: &str = *name;
 ///
 /// ```
 pub struct Str<'a>(&'a str);
