@@ -99,7 +99,11 @@ impl FastInput {
                 s
             }
         } else {
-            unsafe { from_utf8_unchecked(&self.data[self.pos.get()..]) }
+            unsafe {
+                let s = from_utf8_unchecked(&self.data[self.pos.get()..])
+                self.pos.set(self.data.len());
+                s
+            }
         }
     }
 
