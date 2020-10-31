@@ -41,11 +41,13 @@ use std::fmt::Display;
 /// and stores them in a HashMap.
 /// ```no_run
 /// use fast_input::{FastInput, Str};
+/// use std::collections::HashMap;
+///
 /// // Input:
 /// // Sven 12
 /// // Lorna 22
 /// let input = FastInput::new();
-/// let map = HashMap::new();
+/// let mut map = HashMap::new();
 /// let (sven, sven_age) = input.next_tuple::<Str, u8>();
 /// let (lorna, lorna_age) = input.next_tuple::<Str, u8>();
 ///
@@ -99,7 +101,11 @@ impl FastInput {
                 s
             }
         } else {
-            unsafe { from_utf8_unchecked(&self.data[self.pos.get()..]) }
+            unsafe {
+                let s = from_utf8_unchecked(&self.data[self.pos.get()..]);
+                self.pos.set(self.data.len());
+                s
+            }
         }
     }
 
@@ -336,6 +342,7 @@ where
 /// Reading (name, age, city) triples using `Str` and `FastInput`:
 /// ```no_run
 /// use fast_input::{FastInput, Str};
+/// use std::collections::HashMap;
 /// // Input:
 /// // Jakub 26 Mora
 /// let input = FastInput::new();
