@@ -1,10 +1,12 @@
-
 use std::cell::Cell;
 use std::io::prelude::*;
 use std::str::{from_utf8_unchecked, FromStr};
 use std::ops::Deref;
 use std::fmt::Display;
 use std::io::stdin;
+
+#[cfg(test)]
+mod tests;
 
 
 /// Simplifies reading and parsing of known input in a speedy fashion.
@@ -375,11 +377,10 @@ where
 /// # Examples
 ///
 /// Reading (name, age, city) triples using `Str` and `FastInput`:
-/// ```no_run
+/// ```rust
 /// use fast_input::{FastInput, Str};
-/// // Input:
-/// // Jakub 26 Mora
-/// let input = FastInput::new();
+/// let data = "Jakub 26 Mora".as_bytes();
+/// let input = FastInput::with_reader(data);
 /// let (name, age, city) = input.next_triple::<Str, u8, Str>();
 /// // Str implements Display
 /// println!("The person is called {}, is {} years old and lives in {}", name, age, city);
