@@ -1,7 +1,7 @@
 [package]
 name = "fast_input"
-version = "0.1.3"
-authors = ["Klas af Geijerstam <klasafgeijerstam@gmail.com>"]
+version = "0.1.4"
+authors = ["Klas af Geijerstam <klasafgeijerstam@gmail.com>", "Jakub Jagiello <kubajagiello94@gmail.com>"]
 edition = "2018"
 license = "MIT"
 description = "Fast and easy input from standard in, made for competetive programming"
