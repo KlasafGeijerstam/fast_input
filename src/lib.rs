@@ -1,8 +1,11 @@
+
 use std::cell::Cell;
 use std::io::prelude::*;
 use std::str::{from_utf8_unchecked, FromStr};
 use std::ops::Deref;
 use std::fmt::Display;
+use std::io::stdin;
+
 
 /// Simplifies reading and parsing of known input in a speedy fashion.
 ///
@@ -61,6 +64,8 @@ pub struct FastInput {
     pos: Cell<usize>,
 }
 
+const BUFFER_SIZE: usize = 8196;
+
 #[allow(dead_code)]
 impl FastInput {
     /// Creates a new FastInput.
@@ -71,7 +76,7 @@ impl FastInput {
     /// is 8196 bytes.
     pub fn new() -> Self {
         FastInput {
-            data: FastInput::read_to_end(8196),
+            data: FastInput::read_to_end(stdin().lock(),BUFFER_SIZE),
             pos: Cell::new(0),
         }
     }
@@ -81,7 +86,18 @@ impl FastInput {
     /// For more information, see [`new`].
     pub fn with_buffer_size(buffer_size: usize) -> Self {
         FastInput {
-            data: FastInput::read_to_end(buffer_size),
+            data: FastInput::read_to_end(stdin().lock(), buffer_size),
+            pos: Cell::new(0),
+        }
+    }
+
+    /// Creates a new FastInput with a given input that implements
+    /// Read
+    ///
+    /// For more information, see [`new`].
+    pub fn with_reader<T: Read>(input: T) -> Self {
+        FastInput {
+            data: FastInput::read_to_end(input, BUFFER_SIZE),
             pos: Cell::new(0),
         }
     }
@@ -296,18 +312,19 @@ impl FastInput {
         )
     }
 
-    fn read_to_end(buffer_size: usize) -> Vec<u8> {
+
+    fn read_to_end<T: Read>(mut input: T, buffer_size: usize) -> Vec<u8> {
         let mut data = Vec::with_capacity(buffer_size);
-        std::io::stdin().lock().read_to_end(&mut data).unwrap();
+        input.read_to_end(&mut data).unwrap();
         data
     }
 
     fn next_newline(&self) -> Option<usize> {
         let mut i = self.pos.get();
-        while i < self.data.len() && self.data[i] != '\n' as u8 {
+        while i < self.data.len() && self.data[i] != b'\n' {
             i += 1;
         }
-        if i < self.data.len() && self.data[i] == '\n' as u8 {
+        if i < self.data.len() && self.data[i] == b'\n' {
             Some(i)
         } else {
             None
