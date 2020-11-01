@@ -76,7 +76,7 @@ impl FastInput {
     /// is 8196 bytes.
     pub fn new() -> Self {
         FastInput {
-            data: FastInput::read_to_end(stdin().lock(),BUFFER_SIZE),
+            data: FastInput::read_to_end(stdin().lock(), BUFFER_SIZE),
             pos: Cell::new(0),
         }
     }
@@ -94,6 +94,24 @@ impl FastInput {
     /// Creates a new FastInput with a given input that implements
     /// Read
     ///
+    /// # Examples
+    ///
+    /// Creating a FastInput over a byte slice:
+    /// ```
+    /// use fast_input::FastInput;
+    /// use std::io::Read;
+    /// 
+    /// let data = "1 2\n3 4".as_bytes();
+    ///
+    /// let input = FastInput::with_reader(data);
+    ///
+    /// let (one, two) = input.next_tuple::<u32, u32>();
+    /// let (three, four) = input.next_tuple::<u32, u32>();
+    ///
+    /// assert_eq!((1, 2), (one, two));
+    /// assert_eq!((3, 4), (three, four));
+    /// assert_eq!(false, input.has_next_line());
+    /// ```
     /// For more information, see [`new`].
     pub fn with_reader<T: Read>(input: T) -> Self {
         FastInput {
