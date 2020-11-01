@@ -1,3 +1,4 @@
+![Rust](https://github.com/KlasafGeijerstam/fast_input/workflows/Rust/badge.svg?event=push)
 # FastInput - Read input, fast!
 
 FastInput is aimed to simplify reading of known input from `stdin`,
