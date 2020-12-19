@@ -348,6 +348,11 @@ impl FastInput {
             None
         }
     }
+
+    pub fn lines<'a>(&'a self) -> impl Iterator<Item = &str> + 'a {
+        (0..).take_while(move |_| self.has_next_line())
+            .map(move |_| self.next_line())
+    }
 }
 
 impl Default for FastInput {

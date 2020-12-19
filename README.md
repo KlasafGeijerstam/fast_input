@@ -29,7 +29,7 @@ let numbers: Vec<u32> = input.next_as_iter().collect();
 
 // `FastInput` contains methods to read up to quintuples
 let (a, b, c, d, e) = input.next_quintuple();
-let sum: 0i32 + a + b + c + d + e;
+let sum: i32 = 0i32 + a + b + c + d + e;
 
 
 // The `Str` type can be used to mix string slices with parsed data

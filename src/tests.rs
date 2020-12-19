@@ -76,3 +76,13 @@ fn read_some_lines() {
         assert_eq!([1, 2, 3], read[..]);
     }
 }
+
+#[test]
+fn read_all_lines() {
+    let data = ["1 2 3", "2 3 4", "5 6 7", "8 9 10"];
+    let src = data.join("\n");
+    let input = FastInput::with_reader(src.as_bytes());
+    for (i, l) in input.lines().enumerate() {
+        assert_eq!(data[i], l);
+    }
+}
