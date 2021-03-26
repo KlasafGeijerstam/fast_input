@@ -6,7 +6,7 @@ edition = "2018"
 license = "MIT"
 description = "Fast and easy input from standard in, made for competetive programming"
 repository = "https://github.com/KlasafGeijerstam/fast_input"
-keywords = ["input", "competetive", "stdin", "kattis", "fast_input"]
+keywords = ["input", "competitive", "stdin", "kattis", "fast_input"]
 categories = ["parsing"]
 
 
