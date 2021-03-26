@@ -349,6 +349,22 @@ impl FastInput {
         }
     }
 
+    /// Returns a (consuming) iterator over all remaining lines.
+    ///
+    /// # Examples
+    ///
+    /// Printing all lines:
+    /// ```rust
+    /// use fast_input::FastInput;
+    ///
+    /// let data = "First\nSecond\nThird".as_bytes();
+    /// let input = FastInput::with_reader(data);
+    /// let all_lines: Vec<_> = input.lines().collect();
+    ///
+    /// assert_eq!(&all_lines, &["First", "Second", "Third"]);
+    /// assert_eq!(input.has_next_line(), false);
+    /// ```
+    /// 
     pub fn lines<'a>(&'a self) -> impl Iterator<Item = &str> + 'a {
         (0..).take_while(move |_| self.has_next_line())
             .map(move |_| self.next_line())

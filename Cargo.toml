@@ -1,6 +1,6 @@
 [package]
 name = "fast_input"
-version = "0.1.5"
+version = "0.1.6"
 authors = ["Klas af Geijerstam <klasafgeijerstam@gmail.com>", "Jakub Jagiello <kubajagiello94@gmail.com>"]
 edition = "2018"
 license = "MIT"

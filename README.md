@@ -38,7 +38,7 @@ let (name, age) = input.next_tuple::<Str, u8>();
 let name: &str = *name;
 
 // Read all remaining lines and print them
-while input.has_next_line() {
-    println!("{}", input.next_line());
+for line in input.lines() {
+    println!("{}", line);
 }
 ```
