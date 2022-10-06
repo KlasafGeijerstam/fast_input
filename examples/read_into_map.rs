@@ -1,4 +1,4 @@
-use fast_input::{FastInput, Str};
+use fast_input::{FastInput, Str, FastParse};
 use std::collections::HashMap;
 
 fn main() {
@@ -6,7 +6,7 @@ fn main() {
     let inp = FastInput::new();
     let mut people = HashMap::new();
     while inp.has_next_line() {
-        let (name, age) = inp.next_tuple::<Str, u32>();
+        let (name, age): (Str, u16) = inp.next();
         *people.entry(*name).or_default() = age;
     }
     println!("{:?}", people);

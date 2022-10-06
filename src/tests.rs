@@ -21,35 +21,35 @@ fn test_read_line_as_split() {
 fn read_single() {
     let data = "-123".as_bytes();
     let input = FastInput::with_reader(data);
-    assert_eq!(-123, input.next());
+    assert_eq!(-123, input.next_parsed());
 }
 
 #[test]
 fn read_tuple() {
     let data = "-123 127".as_bytes();
     let input = FastInput::with_reader(data);
-    assert_eq!((-123, 127), input.next_tuple());
+    assert_eq!((-123, 127), input.next());
 }
 
 #[test]
 fn read_triple() {
     let data = "-123 127 -127".as_bytes();
     let input = FastInput::with_reader(data);
-    assert_eq!((-123, 127, -127), input.next_triple());
+    assert_eq!((-123, 127, -127), input.next());
 }
 
 #[test]
 fn read_quad() {
     let data = "-123 127".as_bytes();
     let input = FastInput::with_reader(data);
-    assert_eq!((-123, 127), input.next_tuple());
+    assert_eq!((-123, 127), input.next());
 }
 
 #[test]
 fn read_quintuple() {
     let data = "-123 127 -127 123 127".as_bytes();
     let input = FastInput::with_reader(data);
-    assert_eq!((-123, 127, -127, 123, 127), input.next_quintuple());
+    assert_eq!((-123, 127, -127, 123, 127), input.next());
 }
 
 #[test]

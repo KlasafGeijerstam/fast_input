@@ -27,13 +27,13 @@ mod tests;
 /// // Input:
 /// // Hello!
 /// // 12 2000
-/// use fast_input::FastInput;
+/// use fast_input::{FastInput, FastParse};
 ///
 /// let input = FastInput::new();
 /// // Must make into String as next_line returns a slice to the internal buffer
 /// // and the second input line advances the internal buffer.
 /// let first_line = input.next_line().to_owned();
-/// let (a, b): (u32, u32) = input.next_tuple();
+/// let (a, b): (u32, u32) = input.next();
 ///
 /// println!("First line was: {}, a + b = {}", first_line, a + b);
 /// ```
@@ -44,7 +44,7 @@ mod tests;
 /// defines the `Str` type. The following example reads (name, age) (&str, u8) pairs
 /// and stores them in a HashMap.
 /// ```no_run
-/// use fast_input::{FastInput, Str};
+/// use fast_input::{FastInput, FastParse, Str};
 /// use std::collections::HashMap;
 ///
 /// // Input:
@@ -52,8 +52,8 @@ mod tests;
 /// // Lorna 22
 /// let input = FastInput::new();
 /// let mut map = HashMap::new();
-/// let (sven, sven_age) = input.next_tuple::<Str, u8>();
-/// let (lorna, lorna_age) = input.next_tuple::<Str, u8>();
+/// let (sven, sven_age): (Str, u16) = input.next();
+/// let (lorna, lorna_age): (Str, u16) = input.next();
 ///
 /// // Deref the Str to a &str
 /// map.insert(*sven, sven_age);
@@ -99,15 +99,15 @@ impl FastInput {
     ///
     /// Creating a FastInput over a byte slice:
     /// ```
-    /// use fast_input::FastInput;
+    /// use fast_input::{FastInput, FastParse};
     /// use std::io::Read;
     ///
     /// let data = "1 2\n3 4".as_bytes();
     ///
     /// let input = FastInput::with_reader(data);
     ///
-    /// let (one, two) = input.next_tuple::<u32, u32>();
-    /// let (three, four) = input.next_tuple::<u32, u32>();
+    /// let (one, two) = input.next();
+    /// let (three, four) = input.next();
     ///
     /// assert_eq!((1, 2), (one, two));
     /// assert_eq!((3, 4), (three, four));
@@ -144,7 +144,7 @@ impl FastInput {
         }
     }
 
-    /// Reads a single value and parses it.
+    /// Reads the next line as a single value and parses it.
     ///
     /// # Examples
     ///
@@ -155,96 +155,17 @@ impl FastInput {
     /// use fast_input::FastInput;
     ///
     /// let input = FastInput::new();
-    /// let number: i32 = input.next();
+    /// let number: i32 = input.next_parsed();
     /// println!("{}", number);
     /// ```
-    pub fn next<'a, T: FastParse<'a>>(&'a self) -> T {
+    pub fn next_parsed<'a, T: FParse<'a>>(&'a self) -> T {
         let mut it = self.next_as_iter();
         it.next().unwrap()
     }
 
-    /// Reads two elements separated by a space, and returns them parsed as a tuple.
-    ///
-    /// # Examples
-    ///
-    /// Reading an `i32` and a `f64`:
-    /// ```no_run
-    /// use fast_input::FastInput;
-    ///
-    /// let input = FastInput::new();
-    /// let (age, length): (i32, f64) = input.next_tuple();
-    /// println!("{} {}", age, length);
-    /// ```
-    /// # Panics
-    /// If there is no more data in the buffer. See [`has_next_line`].
-    pub fn next_tuple<'a, T1: FastParse<'a>, T2: FastParse<'a>>(&'a self) -> (T1, T2) {
-        let mut it = self.next_split();
-        (
-            T1::fparse(it.next().unwrap()),
-            T2::fparse(it.next().unwrap()),
-        )
-    }
 
-    /// Reads three elements separated by a space, and returns them as a triple.
-    ///
-    /// # Panics
-    /// If there is no more data in the buffer. See [`has_next_line`].
-    pub fn next_triple<'a, T1: FastParse<'a>, T2: FastParse<'a>, T3: FastParse<'a>>(
-        &'a self,
-    ) -> (T1, T2, T3) {
-        let mut it = self.next_split();
-        (
-            T1::fparse(it.next().unwrap()),
-            T2::fparse(it.next().unwrap()),
-            T3::fparse(it.next().unwrap()),
-        )
-    }
 
-    /// Reads four elements separated by a space, and returns them as a quad-tuple.
-    ///
-    /// # Panics
-    /// If there is no more data in the buffer. See [`has_next_line`].
-    pub fn next_quad<
-        'a,
-        T1: FastParse<'a>,
-        T2: FastParse<'a>,
-        T3: FastParse<'a>,
-        T4: FastParse<'a>,
-    >(
-        &'a self,
-    ) -> (T1, T2, T3, T4) {
-        let mut it = self.next_split();
-        (
-            T1::fparse(it.next().unwrap()),
-            T2::fparse(it.next().unwrap()),
-            T3::fparse(it.next().unwrap()),
-            T4::fparse(it.next().unwrap()),
-        )
-    }
 
-    /// Reads five elements separated by a space, and returns them as a quintuple.
-    ///
-    /// # Panics
-    /// If there is no more data in the buffer. See [`has_next_line`].
-    pub fn next_quintuple<
-        'a,
-        T1: FastParse<'a>,
-        T2: FastParse<'a>,
-        T3: FastParse<'a>,
-        T4: FastParse<'a>,
-        T5: FastParse<'a>,
-    >(
-        &'a self,
-    ) -> (T1, T2, T3, T4, T5) {
-        let mut it = self.next_split();
-        (
-            T1::fparse(it.next().unwrap()),
-            T2::fparse(it.next().unwrap()),
-            T3::fparse(it.next().unwrap()),
-            T4::fparse(it.next().unwrap()),
-            T5::fparse(it.next().unwrap()),
-        )
-    }
 
     /// Reads the next line and returns an iterator over the elements of the line.
     ///
@@ -260,7 +181,7 @@ impl FastInput {
     /// ```
     /// # Panics
     /// If there is no more data in the buffer. See [`has_next_line`].
-    pub fn next_as_iter<'a, T: FastParse<'a>>(&'a self) -> impl Iterator<Item = T> + '_ {
+    pub fn next_as_iter<'a, T: FParse<'a>>(&'a self) -> impl Iterator<Item = T> + '_ {
         self.next_line().trim().split(' ').map(|x| T::fparse(x))
     }
 
@@ -301,36 +222,6 @@ impl FastInput {
         self.pos.get() != self.data.len()
     }
 
-    /// Returns the next line as a str tuple.
-    ///
-    /// # Panics
-    /// If there is no more data in the buffer. See [`has_next_line`].
-    #[deprecated(
-        since = "0.1.1",
-        note = "Use `next_tuple` with the `Str` type instead."
-    )]
-    pub fn next_str_tuple(&self) -> (&str, &str) {
-        let mut line = self.next_line().trim().split(' ');
-        (line.next().unwrap(), line.next().unwrap())
-    }
-
-    /// Returns the next line as a str triple.
-    ///
-    /// # Panics
-    /// If there is no more data in the buffer. See [`has_next_line`].
-    #[deprecated(
-        since = "0.1.1",
-        note = "Use `next_triple` with the `Str` type instead."
-    )]
-    pub fn next_str_triple(&self) -> (&str, &str, &str) {
-        let mut line = self.next_line().trim().split(' ');
-        (
-            line.next().unwrap(),
-            line.next().unwrap(),
-            line.next().unwrap(),
-        )
-    }
-
     fn read_to_end<T: Read>(mut input: T, buffer_size: usize) -> Vec<u8> {
         let mut data = Vec::with_capacity(buffer_size);
         input.read_to_end(&mut data).unwrap();
@@ -364,7 +255,7 @@ impl FastInput {
     /// assert_eq!(&all_lines, &["First", "Second", "Third"]);
     /// assert_eq!(input.has_next_line(), false);
     /// ```
-    /// 
+    ///
     pub fn lines<'a>(&'a self) -> impl Iterator<Item = &str> + 'a {
         (0..).take_while(move |_| self.has_next_line())
             .map(move |_| self.next_line())
@@ -377,14 +268,113 @@ impl Default for FastInput {
     }
 }
 
+pub trait FastParse<'a, T> {
+    fn next(&'a self) -> T;
+}
+
+impl<'a, T1, T2> FastParse<'a, (T1, T2)> for FastInput
+where
+    T1: FParse<'a>,
+    T2: FParse<'a>
+{
+    /// Reads two elements separated by a space, and returns them parsed as a tuple.
+    ///
+    /// # Examples
+    ///
+    /// Reading an `i32` and a `f64`:
+    /// ```no_run
+    /// use fast_input::{FastInput, FastParse};
+    ///
+    /// let input = FastInput::new();
+    /// let (age, length): (i32, f64) = input.next();
+    /// println!("{} {}", age, length);
+    /// ```
+    /// # Panics
+    /// If there is no more data in the buffer. See [`has_next_line`].
+    fn next(&'a self) -> (T1, T2) {
+        let mut it = self.next_split();
+        (
+            T1::fparse(it.next().unwrap()),
+            T2::fparse(it.next().unwrap()),
+        )
+    }
+}
+
+impl<'a, T1, T2, T3> FastParse<'a, (T1, T2, T3)> for FastInput
+where
+    T1: FParse<'a>,
+    T2: FParse<'a>,
+    T3: FParse<'a>
+{
+    /// Reads three elements separated by a space, and returns them as a triple.
+    ///
+    /// # Panics
+    /// If there is no more data in the buffer. See [`has_next_line`].
+    fn next(&'a self) -> (T1, T2, T3) {
+        let mut it = self.next_split();
+        (
+            T1::fparse(it.next().unwrap()),
+            T2::fparse(it.next().unwrap()),
+            T3::fparse(it.next().unwrap()),
+        )
+    }
+}
+
+impl<'a, T1, T2, T3, T4> FastParse<'a, (T1, T2, T3, T4)> for FastInput
+where
+    T1: FParse<'a>,
+    T2: FParse<'a>,
+    T3: FParse<'a>,
+    T4: FParse<'a>
+{
+    /// Reads four elements separated by a space, and returns them as a quad-tuple.
+    ///
+    /// # Panics
+    /// If there is no more data in the buffer. See [`has_next_line`].
+    fn next(&'a self) -> (T1, T2, T3, T4) {
+        let mut it = self.next_split();
+        (
+            T1::fparse(it.next().unwrap()),
+            T2::fparse(it.next().unwrap()),
+            T3::fparse(it.next().unwrap()),
+            T4::fparse(it.next().unwrap()),
+        )
+    }
+}
+
+impl<'a, T1, T2, T3, T4, T5> FastParse<'a, (T1, T2, T3, T4, T5)> for FastInput
+where
+    T1: FParse<'a>,
+    T2: FParse<'a>,
+    T3: FParse<'a>,
+    T4: FParse<'a>,
+    T5: FParse<'a>
+{
+    /// Reads five elements separated by a space, and returns them as a quintuple.
+    ///
+    /// # Panics
+    /// If there is no more data in the buffer. See [`has_next_line`].
+    fn next(&'a self) -> (T1, T2, T3, T4, T5) {
+        let mut it = self.next_split();
+        (
+            T1::fparse(it.next().unwrap()),
+            T2::fparse(it.next().unwrap()),
+            T3::fparse(it.next().unwrap()),
+            T4::fparse(it.next().unwrap()),
+            T5::fparse(it.next().unwrap()),
+        )
+    }
+}
+
+
 /// Helper trait for parsing.
 /// Mainly used to avoid repeating type constraints.
-pub trait FastParse<'a> {
+pub trait FParse<'a> {
     /// Parses a type from a string slice
     fn fparse(s: &'a str) -> Self;
 }
 
-impl<'a, T: FromStr> FastParse<'a> for T
+impl<'a, T: FromStr> FParse<'a> for T
 where
     <T as FromStr>::Err: std::fmt::Debug,
 {
@@ -395,17 +385,17 @@ where
 
 /// Allows reading of string slices (`&str`).
 /// The standard library does not provide a `FromStr` implementation
-/// for `&str`. The `Str` type newtypes `&str` and implements `FastParse`
+/// for `&str`. The `Str` type newtypes `&str` and implements `FParse`
 /// and `Deref<Target = &str>`.
 ///
 /// # Examples
 ///
 /// Reading (name, age, city) triples using `Str` and `FastInput`:
 /// ```rust
-/// use fast_input::{FastInput, Str};
+/// use fast_input::{FastInput, FastParse, Str};
 /// let data = "Jakub 26 Mora".as_bytes();
 /// let input = FastInput::with_reader(data);
-/// let (name, age, city) = input.next_triple::<Str, u8, Str>();
+/// let (name, age, city): (Str, u8, Str) = input.next();
 /// // Str implements Display
 /// println!("The person is called {}, is {} years old and lives in {}", name, age, city);
 ///
@@ -415,7 +405,7 @@ where
 /// ```
 pub struct Str<'a>(&'a str);
 
-impl<'a> FastParse<'a> for Str<'a> {
+impl<'a> FParse<'a> for Str<'a> {
     fn fparse(s: &'a str) -> Self {
         Str::<'a>(s)
     }
